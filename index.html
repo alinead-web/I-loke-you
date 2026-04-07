@@ -2,84 +2,109 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ECOL 1000 - Academic Review Tool</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ECOL 1000 - Professional Study Tool</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        body { font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
+        
+        /* Fixed bottom padding for mobile to prevent Nav overlap */
+        .content-area { padding-bottom: 120px; }
+
         .flip-card { perspective: 1000px; height: 240px; }
         .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
-        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .flip-card-front, .flip-card-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 1.5rem; border-radius: 1.25rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
         .flip-card-front { background-color: #ffffff; color: #1e293b; border: 2px solid #e2e8f0; }
-        .flip-card-back { background-color: #1e40af; color: white; transform: rotateY(180deg); }
+        .flip-card-back { background-color: #2563eb; color: white; transform: rotateY(180deg); }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* High-Quality Feedback Colors */
+        /* Qualitative Feedback Colors */
         .ans-correct { background-color: #ecfdf5 !important; border-color: #10b981 !important; color: #065f46 !important; font-weight: 700; border-width: 2px; }
         .ans-wrong { background-color: #fff1f2 !important; border-color: #f43f5e !important; color: #9f1239 !important; font-weight: 700; border-width: 2px; }
         .ans-neutral { opacity: 0.4; pointer-events: none; border-color: #f1f5f9 !important; }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen pb-20 md:pb-0 md:pt-16">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen">
 
-    <!-- Navigation -->
-    <nav class="fixed bottom-0 w-full bg-white shadow-lg border-t md:top-0 md:bottom-auto md:border-b z-50">
-        <div class="max-w-5xl mx-auto flex justify-around md:justify-center md:space-x-12 p-3">
-            <button onclick="nav('dashboard')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-blue-600 transition" data-target="dashboard"><i class="fas fa-home text-xl mb-1"></i><span class="text-[10px] font-bold uppercase tracking-widest">Dashboard</span></button>
-            <button onclick="nav('quiz')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-blue-600 transition" data-target="quiz"><i class="fas fa-tasks text-xl mb-1"></i><span class="text-[10px] font-bold uppercase tracking-widest">Quiz</span></button>
-            <button onclick="nav('flashcards')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-blue-600 transition" data-target="flashcards"><i class="fas fa-clone text-xl mb-1"></i><span class="text-[10px] font-bold uppercase tracking-widest">Cards</span></button>
-            <button onclick="nav('review')" class="nav-btn flex flex-col items-center text-slate-400 hover:text-blue-600 transition" data-target="review"><i class="fas fa-history text-xl mb-1"></i><span class="text-[10px] font-bold uppercase tracking-widest">Review</span></button>
+    <!-- Mobile-First Navigation Bar -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-[100] shadow-[0_-4px_12px_rgba(0,0,0,0.05)]">
+        <div class="max-w-4xl mx-auto flex justify-around items-center h-20 px-2">
+            <button onclick="nav('dashboard')" class="nav-btn flex flex-col items-center justify-center w-full transition text-slate-400 hover:text-blue-600" data-target="dashboard">
+                <i class="fas fa-home text-xl mb-1"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Dashboard</span>
+            </button>
+            <button onclick="nav('quiz')" class="nav-btn flex flex-col items-center justify-center w-full transition text-slate-400 hover:text-blue-600" data-target="quiz">
+                <i class="fas fa-tasks text-xl mb-1"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Quiz</span>
+            </button>
+            <button onclick="nav('flashcards')" class="nav-btn flex flex-col items-center justify-center w-full transition text-slate-400 hover:text-blue-600" data-target="flashcards">
+                <i class="fas fa-clone text-xl mb-1"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Cards</span>
+            </button>
+            <button onclick="nav('review')" class="nav-btn flex flex-col items-center justify-center w-full transition text-slate-400 hover:text-blue-600" data-target="review">
+                <i class="fas fa-history text-xl mb-1"></i>
+                <span class="text-[10px] font-bold uppercase tracking-tighter">Review</span>
+            </button>
         </div>
     </nav>
 
-    <main class="max-w-4xl mx-auto p-4 pt-6 md:pt-10">
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto p-4 pt-6 md:pt-12 content-area">
         
         <!-- DASHBOARD -->
         <section id="dashboard" class="tab-content active">
             <h1 class="text-3xl font-black text-slate-900 mb-1">ECOL 1000</h1>
             <p class="text-blue-600 font-bold mb-8 uppercase tracking-widest text-sm">Ecological Basis of Environmental Issues</p>
             
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 text-center">
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <p class="text-[10px] uppercase text-slate-400 font-black mb-1">Progress</p>
-                    <p class="text-3xl font-black text-slate-800" id="dash-prog">0/100</p>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-8">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[9px] uppercase text-slate-400 font-black mb-1">Progress</p>
+                    <p class="text-2xl font-black text-slate-800" id="dash-prog">0/100</p>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <p class="text-[10px] uppercase text-slate-400 font-black mb-1">Score</p>
-                    <p class="text-3xl font-black text-emerald-600" id="dash-success">0%</p>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[9px] uppercase text-slate-400 font-black mb-1">Success</p>
+                    <p class="text-2xl font-black text-emerald-600" id="dash-success">0%</p>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <p class="text-[10px] uppercase text-slate-400 font-black mb-1">Mistakes</p>
-                    <p class="text-3xl font-black text-rose-500" id="dash-errors">0</p>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[9px] uppercase text-slate-400 font-black mb-1">Mistakes</p>
+                    <p class="text-2xl font-black text-rose-500" id="dash-errors">0</p>
                 </div>
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200">
-                    <p class="text-[10px] uppercase text-slate-400 font-black mb-1">Saved</p>
-                    <p class="text-3xl font-black text-amber-500" id="dash-bookmarks">0</p>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm text-center">
+                    <p class="text-[9px] uppercase text-slate-400 font-black mb-1">Saved</p>
+                    <p class="text-2xl font-black text-amber-500" id="dash-bookmarks">0</p>
                 </div>
             </div>
 
-            <div class="bg-white p-8 rounded-3xl shadow-sm border border-slate-200 mb-8">
-                <h2 class="text-xl font-black mb-6 uppercase tracking-tighter">Lecture Mastery</h2>
+            <div class="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm mb-12">
+                <h2 class="text-lg font-black mb-6 uppercase tracking-tighter border-b pb-4">Lecture Mastery</h2>
                 <div id="chapter-stats" class="space-y-6"></div>
             </div>
             
             <div class="flex justify-center">
-                <button onclick="resetData()" class="text-xs text-slate-300 hover:text-rose-500 transition underline tracking-widest uppercase font-bold">Wipe Local Progress</button>
+                <button onclick="resetData()" class="text-[10px] text-slate-300 hover:text-rose-500 transition tracking-widest uppercase font-black">Wipe All Data</button>
             </div>
         </section>
 
-        <!-- QUIZ ENGINE -->
+        <!-- QUIZ -->
         <section id="quiz" class="tab-content">
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Study Bank</h2>
                 <div class="flex gap-2 w-full md:w-auto">
-                    <button id="btn-shuffle" onclick="toggleShuffle()" class="flex-1 md:flex-none px-4 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black transition hover:bg-slate-50 uppercase tracking-widest"><i class="fas fa-random mr-2"></i>Shuffle: <span id="shuffle-status">OFF</span></button>
-                    <select id="quiz-filter" class="flex-1 md:flex-none p-2 border border-slate-200 rounded-xl text-xs font-black bg-white uppercase tracking-widest" onchange="startQuiz()">
+                    <button id="btn-shuffle" onclick="toggleShuffle()" class="flex-1 md:flex-none px-4 py-2 bg-white border border-slate-200 rounded-xl text-[10px] font-black transition hover:bg-slate-50 uppercase tracking-widest"><i class="fas fa-random mr-2"></i>Shuffle: <span id="shuffle-status">OFF</span></button>
+                    <select id="quiz-filter" class="flex-1 md:flex-none p-2 border border-slate-200 rounded-xl text-[10px] font-black bg-white uppercase tracking-widest focus:outline-none" onchange="startQuiz()">
                         <option value="all">All Lectures</option>
                         <option value="L11">L11 - Biodiversity</option>
                         <option value="L12">L12 - Extinctions</option>
@@ -89,36 +114,28 @@
                 </div>
             </div>
             
-            <div id="quiz-container" class="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-sm border border-slate-200 min-h-[400px]"></div>
+            <div id="quiz-container" class="bg-white p-6 md:p-10 rounded-[2rem] shadow-sm border border-slate-200 min-h-[350px]"></div>
             
             <div class="flex justify-between items-center mt-8">
-                <button onclick="prevQuestion()" class="w-14 h-14 flex items-center justify-center bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition shadow-sm"><i class="fas fa-chevron-left"></i></button>
-                <div class="text-center">
-                    <span id="quiz-counter" class="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Question 1 / 100</span>
-                </div>
-                <button onclick="nextQuestion()" class="w-14 h-14 flex items-center justify-center bg-blue-600 text-white rounded-2xl hover:bg-blue-700 shadow-xl shadow-blue-100 transition"><i class="fas fa-chevron-right"></i></button>
+                <button onclick="prevQuestion()" class="w-14 h-14 flex items-center justify-center bg-white border border-slate-200 rounded-2xl hover:bg-slate-50 transition active:scale-95 shadow-sm"><i class="fas fa-chevron-left"></i></button>
+                <span id="quiz-counter" class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Question 1 / 100</span>
+                <button onclick="nextQuestion()" class="w-14 h-14 flex items-center justify-center bg-blue-600 text-white rounded-2xl hover:bg-blue-700 active:scale-95 shadow-lg shadow-blue-100 transition"><i class="fas fa-chevron-right"></i></button>
             </div>
         </section>
 
-        <!-- FLASHCARDS -->
+        <!-- CARDS -->
         <section id="flashcards" class="tab-content">
-            <div class="mb-8">
-                <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter">Vocabulary (32 Terms)</h2>
-                <p class="text-slate-500 text-sm">Click card to reveal definition.</p>
-            </div>
+            <h2 class="text-2xl font-black text-slate-900 uppercase tracking-tighter mb-6">Terminology (32)</h2>
             <div id="flashcards-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
         </section>
 
-        <!-- REVIEW CENTER -->
+        <!-- REVIEW -->
         <section id="review" class="tab-content">
-            <h2 class="text-2xl font-black text-slate-900 mb-2 uppercase tracking-tighter">Focused Review</h2>
-            <p class="text-slate-500 text-sm mb-8 font-medium">Revisit questions you missed or saved for later.</p>
-            
+            <h2 class="text-2xl font-black text-slate-900 mb-6 uppercase tracking-tighter">My Weak Spots</h2>
             <div class="flex space-x-2 mb-8 bg-slate-200 p-1 rounded-2xl w-fit">
                 <button onclick="setReviewMode('errors')" id="btn-rev-errors" class="px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition shadow-sm bg-white text-rose-600">Mistakes</button>
                 <button onclick="setReviewMode('bookmarks')" id="btn-rev-bookmarks" class="px-6 py-2 rounded-xl font-black text-[10px] uppercase tracking-widest transition text-slate-500">Favorited</button>
             </div>
-
             <div id="review-list" class="space-y-6"></div>
         </section>
 
@@ -126,148 +143,148 @@
 
 <script>
 /* ==========================================================================
-   BANK: 100 QUESTIONS + 32 FLASHCARDS (FULL EXPLANATIONS)
+   BANK: 100 QUESTIONS + 32 FLASHCARDS
    ========================================================================== */
 const QUESTIONS = [
-    // L11: BIODIVERSITY (25 Qs)
-    { id:1, l:"L11", q:"How is biodiversity measured within a population?", o:[{t:"Genetic variation among individuals", c:true},{t:"Total number of species", c:false},{t:"Variety of habitats", c:false},{t:"Latitude gradient", c:false}], r:"Within populations, biodiversity is the genetic diversity. This includes variations such as hair color, height, and blood type among individuals." },
-    { id:2, l:"L11", q:"Inbreeding results from small populations and increases the chances of:", o:[{t:"New species emerging", c:false},{t:"Genetic diseases", c:true},{t:"High outbreeding", c:false},{t:"Larger individuals", c:false}], r:"Inbreeding (mating between close relatives) reduces genetic variation and can lead to conditions like hemophilia or cystic fibrosis." },
-    { id:3, l:"L11", q:"Which process maximizes genetic diversity in a population?", o:[{t:"Inbreeding", c:false},{t:"Outbreeding", c:true},{t:"Cloning", c:false},{t:"Habitat fragmentation", c:false}], r:"Outbreeding, which is sexual reproduction between non-closely related individuals, is the best way to maintain a healthy gene pool." },
-    { id:4, l:"L11", q:"Endemic species are characterized as being:", o:[{t:"Found worldwide", c:false},{t:"Found only in specific, localized areas", c:true},{t:"Invasive in new territories", c:false},{t:"Extirpated globally", c:false}], r:"Endemic species have a very restricted range. For example, Jordan's salamander is only found in the moist forests of the southern Appalachians." },
-    { id:5, l:"L11", q:"Species diversity consists of richness and:", o:[{t:"Genetic variation", c:false},{t:"Relative abundance", c:true},{t:"Migration distance", c:false},{t:"Trophic level", c:false}], r:"Species diversity isn't just about counting how many types there are (richness), but also how many individuals of each type exist (relative abundance)." },
-    { id:6, l:"L11", q:"Ecological diversity includes variety in habitats, niches, and:", o:[{t:"Blood types", c:false},{t:"Trophic levels and community interactions", c:true},{t:"Gene mutations", c:false},{t:"Weather patterns", c:false}], r:"Ecological diversity looks at the complex interactions within a community, rather than just individual species." },
-    { id:7, l:"L11", q:"Which group accounts for most global biodiversity known to science?", o:[{t:"Vertebrates", c:false},{t:"Plants", c:false},{t:"Insects", c:true},{t:"Fungi", c:false}], r:"Insects have over 1 million known species and estimates of up to 9 million total, making them the most diverse group on Earth." },
-    { id:8, l:"L11", q:"Species richness generally increases markedly as you move toward:", o:[{t:"The poles", c:false},{t:"The equator", c:true},{t:"High altitudes", c:false},{t:"Ocean trenches", c:false}], r:"Across most groups (ants, birds, trees), diversity follows a latitudinal gradient, peaking at the equator." },
-    { id:9, l:"L11", q:"What is the 'Time View' explanation for tropical diversity?", o:[{t:"Tropical habitats are younger", c:false},{t:"Tropical habitats are older and had more time to accumulate species", c:true},{t:"Tropics have faster clocks", c:false},{t:"Tropics have shorter days", c:false}], r:"The Time View suggests that because tropical areas weren't covered by ice during glaciation, speciation has continued for a longer span of time." },
-    { id:10, l:"L11", q:"According to MacArthur-Wilson, where is the balance point of species on an island?", o:[{t:"The peak of colonization", c:false},{t:"Where colonization and extinction lines cross", c:true},{t:"At the start of extinction", c:false},{t:"When the island is full", c:false}], r:"The equilibrium number (\\(\\hat{S}\\)) is determined by the specific point where the rates of colonization and extinction are equal." },
-    { id:11, l:"L11", q:"Large islands generally support more species because:", o:[{t:"They are closer to land", c:false},{t:"They have lower extinction rates", c:true},{t:"They have no predators", c:false},{t:"They are warmer", c:false}], r:"Larger islands have more resources and larger populations, which significantly reduces the probability of a species going extinct." },
-    { id:12, l:"L11", q:"The structural complexity of a habitat like a coral reef results in:", o:[{t:"Fewer habitats", c:false},{t:"Many more habitats and niches for species", c:true},{t:"Less sunlight", c:false},{t:"Higher colonization speed", c:false}], r:"Physical complexity (like the branches of coral or trees) creates many micro-habitats that can support a wider variety of life." },
-    { id:13, l:"L11", q:"Alpha diversity is a measure of:", o:[{t:"Regional diversity", c:false},{t:"Local diversity in a small area of homogeneous habitat", c:true},{t:"Genetic health", c:false},{t:"Continental diversity", c:false}], r:"Alpha is the most local scale of diversity measurement used by ecologists." },
-    { id:14, l:"L11", q:"What is 'Gamma Diversity'?", o:[{t:"Diversity in one pond", c:false},{t:"Total species observed in all habitats within a large regional area", c:true},{t:"Diversity between parents", c:false},{t:"The number of predators", c:false}], r:"Gamma diversity looks at the big picture, encompassing all different types of habitats within a barrier-free geographic region." },
-    { id:15, l:"L11", q:"The 25 global hotspots of biodiversity occupy only ___ of the planet's land area.", o:[{t:"10%", c:false},{t:"1.4%", c:true},{t:"50%", c:false},{t:"25%", c:false}], r:"Despite their tiny size, these 25 regions hold 44% of all plant species and 35% of all terrestrial vertebrates." },
-    { id:16, l:"L11", q:"Jordan's salamander is found ONLY in the moisture-rich forests of which US region?", o:[{t:"Rocky Mountains", c:false},{t:"Southern Appalachian Mountains", c:true},{t:"Everglades", c:false},{t:"Sierra Nevada", c:false}], r:"It is one of 20 endemic species of salamanders that live only in that specific humid mountain range." },
-    { id:17, l:"L11", q:"Which island type would MacArthur-Wilson predict to have the LOWEST biodiversity?", o:[{t:"Large island near mainland", c:false},{t:"Small island far from mainland", c:true},{t:"Small island near mainland", c:false},{t:"Large island far from mainland", c:false}], r:"A small, far island has low colonization rates and high extinction rates, leading to minimal species counts." },
-    { id:18, l:"L11", q:"Georgia is considered a diversity hotspot for which of these groups?", o:[{t:"Polar bears", c:false},{t:"Freshwater mussels", c:true},{t:"Penguins", c:false},{t:"Kangaroos", c:false}], r:"Georgia has some of the highest freshwater fish and mussel diversity in the world as shown in the lecture slides." },
-    { id:19, l:"L11", q:"Approximately how many species of plants are known currently?", o:[{t:"10,000", c:false},{t:"310,129", c:true},{t:"1,000,000", c:false},{t:"50,000", c:false}], r:"Scientists have identified roughly 310,000 species, though estimates suggest another 400,000 might remain undiscovered." },
-    { id:20, l:"L11", q:"Mating between non-closely related individuals is called:", o:[{t:"Inbreeding", c:false},{t:"Outbreeding", c:true},{t:"Speciation", c:false},{t:"Cloning", c:false}], r:"Outbreeding through sexual reproduction ensures genetic health and population resilience." },
-    { id:21, l:"L11", q:"According to the 'Equilibrium View', tropical diversity reaches a balance where:", o:[{t:"Speciation equals extinction", c:false},{t:"Speciation rate is faster than extinction rate", c:true},{t:"Extinction is zero", c:false},{t:"Migration stops", c:false}], r:"This theory suggests that the factors adding species (speciation) simply operate at a higher frequency than the factors removing them." },
-    { id:22, l:"L11", q:"Which island biogeography factor increases the colonization rate?", o:[{t:"Large size", c:false},{t:"Close distance to the mainland", c:true},{t:"High altitude", c:false},{t:"Sandy soil", c:false}], r:"Proximity allows more individuals from the mainland to successfully migrate to the island." },
-    { id:23, l:"L11", q:"A 'hotspot' must have high diversity and high ___.", o:[{t:"Humidity", c:false},{t:"Endemism", c:true},{t:"Agriculture", c:false},{t:"Pollution", c:false}], r:"Endemism (species found nowhere else) is a primary requirement for an area to be labeled a biodiversity hotspot." },
-    { id:24, l:"L11", q:"Genetic diversity is particularly important for survival in:", o:[{t:"Static environments", c:false},{t:"Changing environments", c:true},{t:"Cold climates only", c:false},{t:"Zoos", c:false}], r:"Variation allows a population to adapt when environmental conditions shift." },
-    { id:25, l:"L11", q:"At no point in Earth's history have there been more species than:", o:[{t:"The Jurassic", c:false},{t:"The Cambrian", c:false},{t:"Right now", c:true},{t:"100 years ago", c:false}], r:"Despite current extinctions, our modern era represents the historical peak of biological diversity on Earth." },
+    // L11: BIODIVERSITY (25)
+    { id:1, l:"L11", q:"How is biodiversity measured within a population?", o:[{t:"Genetic variation among individuals", c:true},{t:"Total species count", c:false},{t:"Alpha diversity index", c:false},{t:"Number of habitats", c:false}], r:"Within populations, biodiversity is the genetic diversity. This includes variations such as hair color, height, and blood type among individuals." },
+    { id:2, l:"L11", q:"Mating between closely related individuals is known as:", o:[{t:"Outbreeding", c:false},{t:"Inbreeding", c:true},{t:"Crossbreeding", c:false},{t:"Cloning", c:false}], r:"Inbreeding results from small populations and increases the risk of genetic diseases such as hemophilia or cystic fibrosis." },
+    { id:3, l:"L11", q:"What is the primary benefit of 'Outbreeding'?", o:[{t:"It creates smaller animals", c:false},{t:"It maximizes genetic diversity", c:true},{t:"It leads to localized endemism", c:false},{t:"It stops migration", c:false}], r:"Outbreeding occurs through the sexual reproduction of individuals that are not closely related, maximizing genetic health." },
+    { id:4, l:"L11", q:"Endemic species are characterized as being:", o:[{t:"Found everywhere on Earth", c:false},{t:"Found only in specific, localized areas", c:true},{t:"An introduced species", c:false},{t:"A species gone extinct", c:false}], r:"Endemic species have a very restricted range. Example: Jordan's salamander, found only in the moisture-rich forests of the southern Appalachians." },
+    { id:5, l:"L11", q:"Species diversity consists of richness and:", o:[{t:"Genetic health", c:false},{t:"Relative abundance", c:true},{t:"Migration patterns", c:false},{t:"Climatic matching", c:false}], r:"Species diversity is not just the count (richness), but also how many individuals of each species exist (abundance)." },
+    { id:6, l:"L11", q:"Ecological diversity includes variety in habitats, niches, and:", o:[{t:"Blood types", c:false},{t:"Trophic levels and community interactions", c:true},{t:"Gene mutations", c:false},{t:"Zoos", c:false}], r:"Ecological diversity focuses on the structural and functional variety of entire communities." },
+    { id:7, l:"L11", q:"Which taxonomic group accounts for the most known global biodiversity?", o:[{t:"Vertebrates", c:false},{t:"Plants", c:false},{t:"Insects", c:true},{t:"Fungi", c:false}], r:"Insects have approximately 1 million known species and up to 9 million estimated, by far the largest group." },
+    { id:8, l:"L11", q:"Species richness generally increases markedly moving toward the:", o:[{t:"Poles", c:false},{t:"Equator", c:true},{t:"High altitudes", c:false},{t:"Oceans", c:false}], r:"The Latitudinal Diversity Gradient shows that species numbers (ants, birds, trees) increase significantly near the equator." },
+    { id:9, l:"L11", q:"The 'Time View' hypothesis for tropical diversity states that:", o:[{t:"Tropics have shorter days", c:false},{t:"Tropical habitats are older and had more time to accumulate species", c:true},{t:"Mutation rates are faster", c:false},{t:"Speciation is impossible", c:false}], r:"Tropical areas weren't covered by ice during glaciations, allowing a longer span for the process of speciation." },
+    { id:10, l:"L11", q:"According to MacArthur-Wilson, where is the species balance point on an island?", o:[{t:" colonization peak", c:false},{t:"Where colonization and extinction rates cross", c:true},{t:"At the start of extinction", c:false},{t:"The center of the island", c:false}], r:"The equilibrium number (\\(\\hat{S}\\)) is the balance point between species arriving and species dying out." },
+    { id:11, l:"L11", q:"Large islands generally support more species because:", o:[{t:"They are closer to land", c:false},{t:"They have lower extinction rates", c:true},{t:"They have fewer niches", c:false},{t:"They have no predators", c:false}], r:"Large islands support larger populations, which significantly reduces the probability of extinction." },
+    { id:12, l:"L11", q:"The structural complexity of a habitat like a coral reef results in:", o:[{t:"Fewer species", c:false},{t:"Many more habitats and niches", c:true},{t:"Less oxygen", c:false},{t:"Higher extinction", c:false}], r:"Physical architecture (branches, nooks) creates more specialized spaces for diverse life." },
+    { id:13, l:"L11", q:"Alpha diversity is a measure of:", o:[{t:"Regional richness", c:false},{t:"Local diversity in a small homogeneous area", c:true},{t:"Genetic health", c:false},{t:"Global count", c:false}], r:"Alpha is the smallest scale of diversity measurement (local habitat)." },
+    { id:14, l:"L11", q:"What is 'Gamma Diversity'?", o:[{t:"Diversity in one lake", c:false},{t:"Total species in all habitats within a large regional area", c:true},{t:"Diversity between siblings", c:false},{t:"Diversity of predators only", c:false}], r:"Gamma diversity measures the total variety across an entire regional landscape." },
+    { id:15, l:"L11", q:"The 25 global biodiversity hotspots cover only ___ of land area.", o:[{t:"10%", c:false},{t:"1.4%", c:true},{t:"50%", c:false},{t:"25%", c:false}], r:"Hotspots are high-priority zones because they hold 44% of all plants in a tiny fraction of land area." },
+    { id:16, l:"L11", q:"Which state is a global hotspot for salamander and mussel diversity?", o:[{t:"California", c:false},{t:"Georgia", c:true},{t:"Florida", c:false},{t:"Texas", c:false}], r:"Georgia's aquatic systems and humid forests host exceptional variety shown in slides 8-10." },
+    { id:17, l:"L11", q:"Which island type would have the LOWEST biodiversity according to the model?", o:[{t:"Large island near mainland", c:false},{t:"Small island far from mainland", c:true},{t:"Small island near mainland", c:false},{t:"Large island far from mainland", c:false}], r:"Small, far islands have low colonization and high extinction rates." },
+    { id:18, l:"L11", q:"Speciation has had a longer span in which habitat?", o:[{t:"Arctic", c:false},{t:"Tropical", c:true},{t:"Alpine", c:false},{t:"Desert", c:false}], r:"Tropical habitats are older than temperate/arctic habitats that were impacted by ice ages." },
+    { id:19, l:"L11", q:"Approximately how many plant species are identified currently?", o:[{t:"10,000", c:false},{t:"310,129", c:true},{t:"1 million", c:false},{t:"50,000", c:false}], r:"Scientists have identified roughly 310,000 species, though estimates suggest more exist." },
+    { id:20, l:"L11", q:"Small populations are most at risk of:", o:[{t:"Outbreeding", c:false},{t:"Inbreeding and genetic diseases", c:true},{t:"Too much food", c:false},{t:"New mutations", c:false}], r:"Lack of partners forces mating between relatives, decreasing genetic health." },
+    { id:21, l:"L11", q:"Outbreeding results from reproduction of individuals that are:", o:[{t:"Not closely related", c:true},{t:"Same gender", c:false},{t:"Same family", c:false},{t:"Clones", c:false}], r:"Outbreeding ensures a diverse and resilient gene pool." },
+    { id:22, l:"L11", q:"Which factor increases the colonization rate in island biogeography?", o:[{t:"Large size", c:false},{t:"Close distance to mainland", c:true},{t:"High altitude", c:false},{t:"Deep water", c:false}], r:"Proximity makes it much easier for mainland species to reach the island." },
+    { id:23, l:"L11", q:"A 'hotspot' requires high diversity and high ___.", o:[{t:"Pollution", c:false},{t:"Endemism", c:true},{t:"Rainfall", c:false},{t:"Industry", c:false}], r:"Endemism (found nowhere else) is the defining marker of a hotspot." },
+    { id:24, l:"L11", q:"Genetic diversity is most vital for survival in:", o:[{t:"Static environments", c:false},{t:"Changing environments", c:true},{t:"Zoos", c:false},{t:"Cages", c:false}], r:"Variation gives a population the traits needed to adapt to shifts in climate or food." },
+    { id:25, l:"L11", q:"True or False: Earth currently has more species than ever in its history.", o:[{t:"True", c:true},{t:"False", c:false}], r:"Slide 3: 'At no time in the history of Earth has there been more species than now'." },
 
-    // L12: EXTINCTIONS (25 Qs)
-    { id:26, l:"L12", q:"Extinction is normal; over ___ of species ever to live are now extinct.", o:[{t:"10%", c:false},{t:"50%", c:false},{t:"99%", c:true},{t:"20%", c:false}], r:"By most estimates, over 99% of all lineages that ever existed on our planet are gone." },
-    { id:27, l:"L12", q:"A mass extinction event involves the loss of over ___% of animal species.", o:[{t:"10%", c:false},{t:"25%", c:false},{t:"50%", c:true},{t:"90%", c:false}], r:"There have been 5 such major events in the last 540 million years." },
-    { id:28, l:"L12", q:"The largest extinction on record, losing 90-95% of marine species, was the:", o:[{t:"K-T", c:false},{t:"Permian", c:true},{t:"Ordovician", c:false},{t:"Devonian", c:false}], r:"The Permian extinction (approx 290M yrs ago) was the most severe event in Earth's history." },
-    { id:29, l:"L12", q:"The most recent major extinction (K-T) occurred approx. how many years ago?", o:[{t:"10,000", c:false},{t:"65.5 million", c:true},{t:"290 million", c:false},{t:"1.6M", c:false}], r:"The K-T event was likely triggered by an asteroid impacting the Gulf of Mexico." },
-    { id:30, l:"L12", q:"What is the natural 'background rate' of extinction?", o:[{t:"1 species / year", c:false},{t:"1 species / 10 million / year", c:true},{t:"100 species / year", c:false},{t:"1 species / century", c:false}], r:"This is the average rate at which species disappeared before human influence." },
-    { id:31, l:"L12", q:"Current extinction rates are estimated at ___ times the background rate.", o:[{t:"10x", c:false},{t:"1,000 to 10,000x", c:true},{t:"100x", c:false},{t:"1,000,000x", c:false}], r:"Human activity (habitat loss, climate change) has radically accelerated the loss of species." },
-    { id:32, l:"L12", q:"Which bird, once found in the billions, died in 1914?", o:[{t:"Carolina Parakeet", c:false},{t:"Passenger Pigeon", c:true},{t:"Moa", c:false},{t:"Great Auk", c:false}], r:"Martha, the last passenger pigeon, died in captivity in 1914. They were once the most common bird on Earth." },
-    { id:33, l:"L12", q:"What caused the extinction of the Great Auk?", o:[{t:"Loss of ice", c:false},{t:"Commercial overhunting for feathers, meat, and oil", c:true},{t:"A giant snake", c:false},{t:"Volcanoes", c:false}], r:"The Great Auk was a penguin-like bird driven to extinction by humans who exploited it for oil and feathers." },
-    { id:34, l:"L12", q:"'Extirpated' means that a species is:", o:[{t:"Extinct globally", c:false},{t:"Extinct locally but still exists elsewhere", c:true},{t:"Invasive", c:false},{t:"Recovered", c:false}], r:"Example: Many mammals are extirpated from the Everglades but live in other parts of the world." },
-    { id:35, l:"L12", q:"Why is seasonal migration a risk factor for extinction?", o:[{t:"It uses too much energy", c:false},{t:"If one critical habitat disappears, the species cannot persist", c:true},{t:"Predators follow them", c:false},{t:"They get lost easily", c:false}], r:"Migrants (like the Whimbrel) require multiple healthy habitats. One missing link in the chain can end the species." },
-    { id:36, l:"L12", q:"Large home ranges like the Florida panther's are threatened by:", o:[{t:"Disease", c:false},{t:"Habitat fragmentation", c:true},{t:"Inbreeding", c:false},{t:"Rain", c:false}], r:"Fragmentation breaks up large territories into small patches, trapping individuals and reducing their survival." },
-    { id:37, l:"L12", q:"The IUCN defines 'Critically Endangered' as a ___ risk of extinction in 10 years.", o:[{t:"10%", c:false},{t:"20%", c:false},{t:"50%", c:true},{t:"100%", c:false}], r:"This is the highest threat classification for a living species on the Red List." },
-    { id:38, l:"L12", q:"In what year was the Endangered Species Act (ESA) passed?", o:[{t:"1914", c:false},{t:"1973", c:true},{t:"1992", c:false},{t:"1850", c:false}], r:"The ESA was designed to halt extinction as a consequence of development, 'whatever the cost'." },
-    { id:39, l:"L12", q:"Which tiny fish reached the Supreme Court under the ESA?", o:[{t:"Blue shiner", c:false},{t:"Snail Darter", c:true},{t:"Sturgeon", c:false},{t:"Amber darter", c:false}], r:"The Snail Darter's habitat halted a $100M dam construction project (Tellico Dam)." },
-    { id:40, l:"L12", q:"Why was listing the Polar Bear as threatened in 2007 controversial?", o:[{t:"It didn't eat seals", c:false},{t:"It linked $CO_2$ and climate change to the ESA", c:true},{t:"It was invasive", c:false},{t:"It was already recovered", c:false}], r:"By listing the bear due to sea ice loss, the government acknowledged the legal link between greenhouse gases and habitat loss." },
-    { id:41, l:"L12", q:"How many species had been delisted from the ESA due to 'recovery' by 2012?", o:[{t:"56", c:false},{t:"28", c:true},{t:"1", c:false},{t:"500", c:false}], r:"56 total species were delisted; 28 of those were because they successfully recovered to healthy levels." },
-    { id:42, l:"L12", q:"What was used to teach Whooping Cranes to migrate?", o:[{t:"Magnets", c:false},{t:"Ultralight aircraft", c:true},{t:"Buses", c:false},{t:"Other cranes", c:false}], r:"Pilots in specialized aircraft led the cranes from central Wisconsin to Florida's Gulf Coast." },
-    { id:43, l:"L12", q:"California condors were saved from fewer than ___ individuals in the wild.", o:[{t:"100", c:false},{t:"20", c:true},{t:"500", c:false},{t:"1,000", c:false}], r:"A captive breeding program increased their numbers from under 20 to over 400." },
-    { id:44, l:"L12", q:"What is a 'Coextinction'?", o:[{t:"Two species helping each other", c:false},{t:"The loss of a predator after its only prey goes extinct", c:true},{t:"Mass death from fire", c:false},{t:"Invasive species taking over", c:false}], r:"Example: Haast's Eagle went extinct after humans wiped out its primary food source, the Moa bird." },
-    { id:45, l:"L12", q:"ESA 'Critical Habitat' applies to:", o:[{t:"Only public lands", c:false},{t:"Both public and private lands", c:true},{t:"Only national parks", c:false},{t:"Only zoos", c:false}], r:"The law protects any area essential to the species' conservation, regardless of ownership." },
-    { id:46, l:"L12", q:"Loss of sea ice affects polar bears because they use it for:", o:[{t:"Drinking", c:false},{t:"Hunting seals", c:true},{t:"Resting only", c:false},{t:"Fur growth", c:false}], r:"Bears need the ice as a platform to hunt; without it, they starve." },
-    { id:47, l:"L12", q:"What is the #1 threat to global biodiversity?", o:[{t:"Pollution", c:false},{t:"Habitat loss and alteration", c:true},{t:"Climate change", c:false},{t:"Disease", c:false}], r:"While other factors exist, the direct loss of physical habitat is the leading driver of extinction." },
-    { id:48, l:"L12", q:"What happened in the Triassic extinction regarding dinosaurs?", o:[{t:"Dinosaurs died out", c:false},{t:"Loss of competitors allowed the evolution of dinosaurs", c:true},{t:"Dinosaurs became marine", c:false},{t:"Dinosaurs moved to the poles", c:false}], r:"The loss of crurotarsans (crocodile ancestors) opened niches for dinosaur dominance." },
-    { id:49, l:"L12", q:"How many of Guam's native lizard species were lost to the snake?", o:[{t:"1", c:false},{t:"6 of 12", c:true},{t:"All of them", c:false},{t:"Zero", c:false}], r:"The Brown Tree Snake decimated both bird and lizard populations in Guam." },
-    { id:50, l:"L12", q:"Which bird died in 1918 in captivity?", o:[{t:"Passenger pigeon", c:false},{t:"Carolina Parakeet (Incas)", c:true},{t:"Great Auk", c:false},{t:"Dodo", c:false}], r:"Incas was the last of the Carolina Parakeets, dying 4 years after the last Passenger Pigeon." },
+    // L12: EXTINCTIONS (25)
+    { id:26, l:"L12", q:"Over ___% of species that ever lived on Earth are now extinct.", o:[{t:"10%", c:false},{t:"Over 99%", c:true},{t:"50%", c:false},{t:"20%", c:false}], r:"Extinction is a normal part of life; almost every lineage that ever appeared is gone." },
+    { id:27, l:"L12", q:"A mass extinction event involves the loss of over ___% of species.", o:[{t:"10%", c:false},{t:"50%", c:true},{t:"25%", c:false},{t:"100%", c:false}], r:"There have been 5 such major events in the last 540 million years." },
+    { id:28, l:"L12", q:"The largest extinction, losing 90-95% of marine life, was the:", o:[{t:"K-T", c:false},{t:"Permian", c:true},{t:"Ordovician", c:false},{t:"Devonian", c:false}], r:"The Permian extinction (approx 290M yrs ago) was the most severe in history." },
+    { id:29, l:"L12", q:"The most recent major extinction (K-T) occurred approx. how many years ago?", o:[{t:"10k", c:false},{t:"65.5 million", c:true},{t:"290M", c:false},{t:"1.6M", c:false}], r:"The K-T event was likely caused by an asteroid impact in the Gulf of Mexico." },
+    { id:30, l:"L12", q:"What is the natural 'background rate' of extinction?", o:[{t:"1 per 10 million species per year", c:true},{t:"100 per year", c:false},{t:"1 per day", c:false},{t:"1 per century", c:false}], r:"This is the average rate of disappearance before humans appeared." },
+    { id:31, l:"L12", q:"Current extinction rates are ___ times the background rate.", o:[{t:"10x", c:false},{t:"1,000 to 10,000x", c:true},{t:"100x", c:false},{t:"No increase", c:false}], r:"Human activity (HIPPCO) has radically accelerated species loss." },
+    { id:32, l:"L12", q:"Which bird, once found in the billions, died in 1914?", o:[{t:"Passenger Pigeon", c:true},{t:"Dodo", c:false},{t:"Moa", c:false},{t:"Whooping Crane", c:false}], r:"Martha, the last passenger pigeon, marked the end of a once-billions-strong population." },
+    { id:33, l:"L12", q:"What caused the Great Auk extinction?", o:[{t:"Loss of ice", c:false},{t:"Commercial overhunting for meat and oil", c:true},{t:"Disease", c:false},{t:"Rats", c:false}], r:"This penguin-like bird was exploited until it vanished completely." },
+    { id:34, l:"L12", q:"'Extirpated' means that a species is:", o:[{t:"Dead globally", c:false},{t:"Dead locally but exists elsewhere", c:true},{t:"Invasive", c:false},{t:"Dangerous", c:false}], r:"Example: Mammals gone from the Everglades but still alive elsewhere." },
+    { id:35, l:"L12", q:"Why is seasonal migration a risk factor?", o:[{t:"Too much energy used", c:false},{t:"Loss of one critical habitat ends the species", c:true},{t:"Predators eat them", c:false},{t:"They get lost", c:false}], r:"Migrants need a chain of healthy habitats; one break ends the species." },
+    { id:36, l:"L12", q:"Large home ranges like the Florida panther's are threatened by:", o:[{t:"Disease", c:false},{t:"Habitat fragmentation", c:true},{t:"Floods", c:false},{t:"Zoos", c:false}], r:"Fragmentation traps individuals in tiny patches, preventing breeding and movement." },
+    { id:37, l:"L12", q:"The IUCN defines 'Critically Endangered' as a ___ risk in 10 years.", o:[{t:"10%", c:false},{t:"50%", c:true},{t:"20%", c:false},{t:"100%", c:false}], r:"The highest threat category on the Red List before extinction." },
+    { id:38, l:"L12", q:"In what year was the Endangered Species Act (ESA) passed?", o:[{t:"1914", c:false},{t:"1973", c:true},{t:"1992", c:false},{t:"1850", c:false}], r:"A landmark US law to halt extinction regardless of economic cost." },
+    { id:39, l:"L12", q:"Which tiny fish reached the Supreme Court under the ESA?", o:[{t:"Snail Darter", c:true},{t:"Blue shiner", c:false},{t:"Sturgeon", c:false},{t:"Amber darter", c:false}], r:"Its habitat halted the $100M Tellico Dam project." },
+    { id:40, l:"L12", q:"Why was listing the Polar Bear controversial?", o:[{t:"It was invasive", c:false},{t:"It linked $CO_2$ and climate change to the ESA", c:true},{t:"It didn't eat seals", c:false},{t:"It was recovered", c:false}], r:"The listing acknowledged greenhouse gases as the cause of habitat loss." },
+    { id:41, l:"L12", q:"How many species had been delisted from recovery by 2012?", o:[{t:"56 total, 28 from recovery", c:true},{t:"Zero", c:false},{t:"500", c:false},{t:"10", c:false}], r:"Half of all delistings were due to successful population recovery." },
+    { id:42, l:"L12", q:"What was used to teach Whooping Cranes to migrate?", o:[{t:"Other birds", c:false},{t:"Ultralight aircraft", c:true},{t:"Trucks", c:false},{t:"Magnets", c:false}], r:"Pilots in ultralights led them from Wisconsin to Florida." },
+    { id:43, l:"L12", q:"California condors fell to below ___ in the wild.", o:[{t:"100", c:false},{t:"20", c:true},{t:"500", c:false},{t:"50", c:false}], r:"Breeding programs brought them back from the very brink." },
+    { id:44, l:"L12", q:"What is a 'Coextinction'?", o:[{t:"Two species helping", c:false},{t:"Loss of a predator after its only prey dies", c:true},{t:"Mass fire death", c:false},{t:"Invasives", c:false}], r:"Example: Haast's Eagle died after the Moa bird was wiped out." },
+    { id:45, l:"L12", q:"ESA 'Critical Habitat' applies to:", o:[{t:"Only public lands", c:false},{t:"Both public and private lands", c:true},{t:"Only parks", c:false},{t:"Zoos", c:false}], r:"The law covers any area essential for species conservation." },
+    { id:46, l:"L12", q:"Loss of sea ice affects polar bears for:", o:[{t:"Drinking", c:false},{t:"Hunting seals", c:true},{t:"Sleeping", c:false},{t:"Fur growth", c:false}], r:"Bears use ice as a platform to hunt; without it, they cannot catch food." },
+    { id:47, l:"L12", q:"What is the #1 threat to global biodiversity?", o:[{t:"Pollution", c:false},{t:"Habitat loss and alteration", c:true},{t:"Climate change", c:false},{t:"Disease", c:false}], r:"Direct physical loss of habitat is the leading driver of extinction." },
+    { id:48, l:"L12", q:"What happened in the Triassic extinction?", o:[{t:"Dinosaurs died", c:false},{t:"Loss of competitors allowed dinosaur evolution", c:true},{t:"Humans arrived", c:false},{t:"Oceans dried", c:false}], r:"Loss of crocodile ancestors opened niches for dinosaur dominance." },
+    { id:49, l:"L12", q:"How many Guam native lizards were lost to the snake?", o:[{t:"1", c:false},{t:"6 of 12", c:true},{t:"All", c:false},{t:"None", c:false}], r:"The snake decimated birds and lizards alike." },
+    { id:50, l:"L12", q:"Which bird died in 1918 in captivity?", o:[{t:"Carolina Parakeet (Incas)", c:true},{t:"Passenger pigeon", c:false},{t:"Dodo", c:false},{t:"Moa", c:false}], r:"Incas was the last parakeet, dying 4 years after the last pigeon." },
 
-    // L13: INVASIVES (25 Qs)
-    { id:51, l:"L13", q:"What defines an 'Invasive Species'?", o:[{t:"Any non-native species", c:false},{t:"An alien species that causes economic or environmental harm", c:true},{t:"A species from the North", c:false},{t:"A species found in zoos", c:false}], r:"It must be non-native (exotic) AND cause harm to nature, economy, or human health." },
-    { id:52, l:"L13", q:"Why do most introductions of exotic species FAIL?", o:[{t:"Low density and climatic mismatch", c:true},{t:"They are too large", c:false},{t:"They reproduce too fast", c:false},{t:"Humans hunt them", c:false}], r:"Most species can't find a mate at low densities or can't handle the new climate/predators." },
-    { id:53, l:"L13", q:"How was the Brown Tree Snake introduced to Guam?", o:[{t:"Pet trade", c:false},{t:"In military shipping cargo during the 1950s", c:true},{t:"To control rats", c:false},{t:"By swimming", c:false}], r:"It was an inadvertent introduction from New Guinea via WWII/post-war cargo." },
-    { id:54, l:"L13", q:"Which fish discovered in Georgia can breathe air and walk on land?", o:[{t:"Asian Carp", c:false},{t:"Snakehead (Channa argus)", c:true},{t:"Darter", c:false},{t:"Sturgeon", c:false}], r:"The Snakehead is a voracious predator that can survive 4 days on land and rampe 400m between habitats." },
-    { id:55, l:"L13", q:"What makes Asian Carp highly disruptive to food webs?", o:[{t:"They eat sharks", c:false},{t:"They feed on plankton used by native larvae and mussels", c:true},{t:"They walk on land", c:false},{t:"They poison the water", c:false}], r:"They consume the foundation of the aquatic food web, starving native species." },
-    { id:56, l:"L13", q:"Where are electric barriers used to stop the spread of Asian Carp?", o:[{t:"Everglades", c:false},{t:"Chicago Waterways (leading to Great Lakes)", c:true},{t:"Appalachian streams", c:false},{t:"Mississippi Delta", c:false}], r:"Barriers in Chicago attempt to prevent them from entering Lake Michigan." },
-    { id:57, l:"L13", q:"What was dropped on Guam to kill snakes?", o:[{t:"Poisons in the water", c:false},{t:"Toxic Mice (containing Acetaminophen/Aspirin)", c:true},{t:"Nets", c:false},{t:"Gas", c:false}], r:"Aspirin is uniquely lethal to these snakes; dead mice were used as parachuted bait." },
-    { id:58, l:"L13", q:"Burmese pythons in the Everglades have caused a ___% decline in some mammals.", o:[{t:"10%", c:false},{t:"50%", c:false},{t:"99%", c:true},{t:"25%", c:false}], r:"They have decimated native populations of mammals like rabbits and foxes." },
-    { id:59, l:"L13", q:"'Invadable' communities often lack ___ on the invading species.", o:[{t:"Water", c:false},{t:"Predators", c:true},{t:"Sunlight", c:false},{t:"Niches", c:false}], r:"The absence of natural enemies in the new environment allows the invader to grow unchecked." },
-    { id:60, l:"L13", q:"What is a common trait of successful invasive plants?", o:[{t:"Only large seeds", c:false},{t:"Vegetative or clonal reproduction", c:true},{t:"Slow growth", c:false},{t:"No seeds", c:false}], r:"Clonal growth allows a single plant to rapidly colonize a vast area." },
-    { id:61, l:"L13", q:"Which invasive plant is famous for covering entire houses and cars?", o:[{t:"Ivy", c:false},{t:"Kudzu", c:true},{t:"Oak", c:false},{t:"Moss", c:false}], r:"Kudzu was introduced to the South and became a runaway invasive due to fast growth." },
-    { id:62, l:"L13", q:"The Joro spider is an invasive recently noted as 'here to stay' in:", o:[{t:"Texas", c:false},{t:"Georgia", c:true},{t:"Maine", c:false},{t:"California", c:false}], r:"The Joro spider is a highly visible new invasive in the Georgia region." },
-    { id:63, l:"L13", q:"'Polyphagous' means an invader has a:", o:[{t:"Broad diet", c:true},{t:"Small stomach", c:false},{t:"Cold blood", c:false},{t:"Fast speed", c:false}], r:"Having a broad diet allows invasives to find food in almost any new environment." },
-    { id:64, l:"L13", q:"Hawaii tree snails are endangered by which introduced predator?", o:[{t:"Rats", c:false},{t:"Rosy wolf snails", c:true},{t:"Pythons", c:false},{t:"Crows", c:false}], r:"Introduced for biocontrol, the Rosy wolf snail ate the native tree snails instead." },
-    { id:65, l:"L13", q:"A Snakehead fish can survive on land for up to ___ days.", o:[{t:"1", c:false},{t:"4", c:true},{t:"10", c:false},{t:"0", c:false}], r:"Their ability to breathe air allows them to survive for days without water." },
-    { id:66, l:"L13", q:"Which invasive species can lay millions of eggs?", o:[{t:"Pythons", c:false},{t:"Asian Carp", c:true},{t:"Snakeheads", c:false},{t:"Snails", c:false}], r:"Massive reproduction potential is a key reason for the Asian Carp's dominance." },
-    { id:67, l:"L13", q:"'Climatical matching' means the invader's native environment is ___ to the new one.", o:[{t:"Opposite", c:false},{t:"Similar", c:true},{t:"Hotter", c:false},{t:"Colder", c:false}], r:"Success is much more likely if the temperatures and rainfall match what the species is used to." },
-    { id:68, l:"L13", q:"How many of Guam's 18 native bird species were lost to the snake?", o:[{t:"2", c:false},{t:"9", c:true},{t:"All", c:false},{t:"5", c:false}], r:"Exactly half of the native bird species were wiped out by the Brown Tree Snake." },
-    { id:69, l:"L13", q:"What was the original reason Asian Carp were imported?", o:[{t:"Fishing", c:false},{t:"To clean commercial fishery ponds", c:true},{t:"Pets", c:false},{t:"Food", c:false}], r:"They were meant to be biological cleaners but escaped during floods." },
-    { id:70, l:"L13", q:"Successful invaders often have ___ generation times.", o:[{t:"Short", c:true},{t:"Long", c:false},{t:"Zero", c:false},{t:"Yearly", c:false}], r:"Short generations allow for rapid population explosions." },
-    { id:71, l:"L13", q:"Python estimates in the Everglades range from 50k to ___.", o:[{t:"100k", c:false},{t:"180k", c:true},{t:"1M", c:false},{t:"5k", c:false}], r:"The snake population is enormous and very difficult to track in the swamp." },
-    { id:72, l:"L13", q:"Anthropogenically disturbed habitats are ___ likely to be invaded.", o:[{t:"Less", c:false},{t:"More", c:true},{t:"Not", c:false},{t:"Equally", c:false}], r:"Human activity (roads, clearing) breaks down ecosystem defenses, aiding invasives." },
-    { id:73, l:"L13", q:"A Snakehead is sexually mature in ___ years.", o:[{t:"10", c:false},{t:"2-3", c:true},{t:"1", c:false},{t:"5", c:false}], r:"Fast maturity is another invasive success trait." },
-    { id:74, l:"L13", q:"In Hawaii, tree snails have not only ecological but ___ significance.", o:[{t:"Nuclear", c:false},{t:"Cultural (folklore/songs)", c:true},{t:"Metallic", c:false},{t:"Industrial", c:false}], r:"Losing these snails means losing a part of Hawaiian heritage." },
-    { id:75, l:"L13", q:"Invasives are alien species whose introduction causes harm to economy, environment or:", o:[{t:"Zoos", c:false},{t:"Human health", c:true},{t:"Pet stores", c:false},{t:"Space", c:false}], r:"Human health risks (diseases, stings) are a major component of invasive harm." },
+    // L13: INVASIVES (25)
+    { id:51, l:"L13", q:"What defines an 'Invasive Species'?", o:[{t:"Any non-native", c:false},{t:"Alien species causing harm", c:true},{t:"Pet store animals", c:false},{t:"Only plants", c:false}], r:"It must be non-native AND cause harm to nature, economy, or health." },
+    { id:52, l:"L13", q:"Why do most introductions fail?", o:[{t:"Low density and climatic mismatch", c:true},{t:"They are too big", c:false},{t:"Humans hunt them", c:false},{t:"They evolve", c:false}], r:"Success is rare; most can't find mates or handle the new climate." },
+    { id:53, l:"L13", q:"How was the Brown Tree Snake introduced to Guam?", o:[{t:"Pet trade", c:false},{t:"Military shipping cargo", c:true},{t:"Rats brought it", c:false},{t:"Swimming", c:false}], r:"Introduced inadvertently from New Guinea via cargo ships in the 1950s." },
+    { id:54, l:"L13", q:"Which Georgia invasive can survive on land for 4 days?", o:[{t:"Asian Carp", c:false},{t:"Snakehead", c:true},{t:"Darter", c:false},{t:"Python", c:false}], r:"The Snakehead can breathe air and rampe 400m across land." },
+    { id:55, l:"L13", q:"Disruption of Asian Carp is mainly due to:", o:[{t:"Eating adult fish", c:false},{t:"Eating plankton used by native larvae", c:true},{t:"Poisoning water", c:false},{t:"Walking on land", c:false}], r:"They consume the foundation of the aquatic food web." },
+    { id:56, l:"L13", q:"Electric barriers are used to stop Asian Carp in:", o:[{t:"Everglades", c:false},{t:"Chicago Waterways", c:true},{t:"Appalachians", c:false},{t:"Savannah River", c:false}], r:"Barriers attempt to prevent their entry into the Great Lakes." },
+    { id:57, l:"L13", q:"What killed snakes in Guam?", o:[{t:"Toxic Mice (Aspirin/Acetaminophen)", c:true},{t:"Poison water", c:false},{t:"Nets", c:false},{t:"Traps", c:false}], r:"Acetaminophen is lethal to these snakes; mice were used as bait." },
+    { id:58, l:"L13", q:"Burmese pythons in the Everglades led to a ___% decline in some mammals.", o:[{t:"10%", c:false},{t:"99%", c:true},{t:"50%", c:false},{t:"25%", c:false}], r:"They decimated rabbits, foxes, and other native mammals." },
+    { id:59, l:"L13", q:"'Invadable' communities often lack:", o:[{t:"Water", c:false},{t:"Predators on the invading species", c:true},{t:"Sunlight", c:false},{t:"Niches", c:false}], r:"Absence of natural enemies allows the invader to grow unchecked." },
+    { id:60, l:"L13", q:"Trait of invasive plants:", o:[{t:"Clonal reproduction", c:true},{t:"Slow growth", c:false},{t:"Large seeds only", c:false},{t:"No roots", c:false}], r:"Clonal growth allows rapid colonization of vast areas." },
+    { id:61, l:"L13", q:"Plant covering buildings/cars in the South:", o:[{t:"Ivy", c:false},{t:"Kudzu", c:true},{t:"Bamboo", c:false},{t:"Moss", c:false}], r:"Kudzu is the classic runaway invasive vine in the US South." },
+    { id:62, l:"L13", q:"Joro spider is 'here to stay' in:", o:[{t:"Texas", c:false},{t:"Georgia", c:true},{t:"Maine", c:false},{t:"Oregon", c:false}], r:"A recently visible invasive in the Georgia region." },
+    { id:63, l:"L13", q:"'Polyphagous' means an invader has a:", o:[{t:"Broad diet", c:true},{t:"Small stomach", c:false},{t:"Cold blood", c:false},{t:"Fast speed", c:false}], r:"Broad diets allow them to thrive in almost any new environment." },
+    { id:64, l:"L13", q:"Hawaii tree snails are endangered by:", o:[{t:"Rosy wolf snails", c:true},{t:"Pythons", c:false},{t:"Rats", c:false},{t:"Crows", c:false}], r:"Introduced for biocontrol, it ate native snails instead." },
+    { id:65, l:"L13", q:"A Snakehead fish can survive land for ___ days.", o:[{t:"1", c:false},{t:"4", c:true},{t:"10", c:false},{t:"0", c:false}], r:"Breathes air, allowing survival without water." },
+    { id:66, l:"L13", q:"Which invasive lays millions of eggs?", o:[{t:"Pythons", c:false},{t:"Asian Carp", c:true},{t:"Snakeheads", c:false},{t:"Snails", c:false}], r:"High fecundity is key for Asian Carp dominance." },
+    { id:67, l:"L13", q:"'Climatical matching' means native and new climates are:", o:[{t:"Opposite", c:false},{t:"Similar", c:true},{t:"Hotter", c:false},{t:"Colder", c:false}], r:"Species succeed best when the environment mimics home." },
+    { id:68, l:"L13", q:"Native bird species lost in Guam:", o:[{t:"2", c:false},{t:"9 of 18", c:true},{t:"All", c:false},{t:"Zero", c:false}], r:"Exactly half were wiped out by the Brown Tree Snake." },
+    { id:69, l:"L13", q:"Original reason Asian Carp were imported:", o:[{t:"Fishing", c:false},{t:"To clean fishery ponds", c:true},{t:"Pets", c:false},{t:"Food", c:false}], r:"Biological cleaners that escaped during floods." },
+    { id:70, l:"L13", q:"Successful invaders have ___ generation times.", o:[{t:"Short", c:true},{t:"Long", c:false},{t:"Yearly", c:false},{t:"Zero", c:false}], r:"Short generations allow for rapid population explosions." },
+    { id:71, l:"L13", q:"Python estimates in Everglades up to:", o:[{t:"180,000", c:true},{t:"1M", c:false},{t:"5k", c:false},{t:"500", c:false}], r:"Huge population in the difficult-to-track swamp." },
+    { id:72, l:"L13", q:"Disturbed habitats are ___ likely to be invaded.", o:[{t:"Less", c:false},{t:"More", c:true},{t:"Not", c:false},{t:"Equally", c:false}], r:"Human activity aids invasives." },
+    { id:73, l:"L13", q:"A Snakehead is sexually mature in ___ years.", o:[{t:"10", c:false},{t:"2-3", c:true},{t:"1", c:false},{t:"5", c:false}], r:"Fast maturity is an invasive success trait." },
+    { id:74, l:"L13", q:"Hawaii tree snails have ___ significance.", o:[{t:"Cultural (folklore)", c:true},{t:"Industrial", c:false},{t:"Nuclear", c:false},{t:"Metallic", c:false}], r:"Heritage lost with the snails." },
+    { id:75, l:"L13", q:"Harm to economy, environment or:", o:[{t:"Human health", c:true},{t:"Space", c:false},{t:"Zoos", c:false},{t:"Pets", c:false}], r:"Health risks are a major component of invasive harm." },
 
-    // L14: CONSERVATION (25 Qs)
-    { id:76, l:"L14", q:"A 'flagship species' acts as a(n) ___ for a defined habitat or cause.", o:[{t:"Invader", c:false},{t:"Ambassador or symbol", c:true},{t:"Pest", c:false},{t:"Indicator", c:false}], r:"Charismatic animals (Pandas, Condors) are used to win public support for conservation." },
-    { id:77, l:"L14", q:"What is the 'Ecosystem Approach' to conservation?", o:[{t:"Saving one panda", c:false},{t:"Protecting entire landscapes to benefit all species", c:true},{t:"Building a wall", c:false},{t:"Zoos only", c:false}], r:"By protecting the whole habitat, you save thousands of species simultaneously." },
-    { id:78, l:"L14", q:"Which country is a global model with over 25% of land protected?", o:[{t:"USA", c:false},{t:"Costa Rica", c:true},{t:"Brésil", c:false},{t:"Canada", c:false}], r:"Costa Rica achieved this through funding, laws, and education." },
-    { id:79, l:"L14", q:"Daniel Janzen's famous restoration project is located in:", o:[{t:"Florida", c:false},{t:"Guanacaste, Costa Rica", c:true},{t:"Amazon", c:false},{t:"Madagascar", c:false}], r:"He is restoring dry forests from degraded cow pastures." },
-    { id:80, l:"L14", q:"'Ecotourism' works as an incentive because it brings in ___.", o:[{t:"Poisons", c:false},{t:"Money and economic benefit", c:true},{t:"Invasives", c:false},{t:"Hunters", c:false}], r:"When locals make money from nature, they have a reason to keep it alive." },
-    { id:81, l:"L14", q:"In a 'Debt-for-Nature' swap, what happens to the debt?", o:[{t:"It is doubled", c:false},{t:"It is forgiven if funds go to conservation", c:true},{t:"It is ignored", c:false},{t:"It is paid in gold", c:false}], r:"Donors buy debt at a discount and cancel it if the country funds local nature projects." },
-    { id:82, l:"L14", q:"What does ICDP stand for?", o:[{t:"Integrated Conservation & Development Project", c:true},{t:"International Cold Data Plan", c:false},{t:"Invasive Control & Destruction Policy", c:false},{t:"Internal Climate Data Program", c:false}], r:"Projects that link wildlife health with human living standards." },
-    { id:83, l:"L14", q:"How did the Hatam people in New Guinea protect their forest?", o:[{t:"Logging", c:false},{t:"Butterfly Ranching (selling rare butterflies legally)", c:true},{t:"Mining", c:false},{t:"Dam building", c:false}], r:"By creating a legal market for butterflies, they valued the forest as habitat." },
-    { id:84, l:"L14", q:"Which treaty regulates international trade of endangered species (like ivory)?", o:[{t:"MMPA", c:false},{t:"CITES", c:true},{t:"CBD", c:false},{t:"ESA", c:false}], r:"The Convention on International Trade in Endangered Species (1973)." },
-    { id:85, l:"L14", q:"The MMPA (1972) specifically protects:", o:[{t:"Birds", c:false},{t:"Marine Mammals", c:true},{t:"All mammals", c:false},{t:"Fish", c:false}], r:"Marine Mammals Protection Act prohibits capture, killing, or harassment." },
-    { id:86, l:"L14", q:"The CBD (Convention on Biological Diversity) has ___ signatory nations.", o:[{t:"50", c:false},{t:"193", c:true},{t:"10", c:false},{t:"100", c:false}], r:"A massive global agreement for sustainable use and conservation." },
-    { id:87, l:"L14", q:"A pitfall of ecotourism is when financial benefits:", o:[{t:"Feed animals", c:false},{t:"Do not stay with the local community", c:true},{t:"Are too large", c:false},{t:"Build zoos", c:false}], r:"Profit must go to locals, otherwise they won't value the conservation." },
-    { id:88, l:"L14", q:"Successful conservation must incorporate the entire landscape, including ___.", o:[{t:"Zoos", c:false},{t:"Humans", c:true},{t:"Deserts", c:false},{t:"Roads", c:false}], r:"Conservation fails if the neighboring human inhabitants are in poverty." },
-    { id:89, l:"L14", q:"Which group helped the Hatam people get permits for butterflies?", o:[{t:"UNESCO", c:false},{t:"WWF (World Wildlife Fund)", c:true},{t:"UGA", c:false},{t:"CNN", c:false}], r:"The WWF worked to establish a legal, sustainable economy for the locals." },
-    { id:90, l:"L14", q:"Hiring previous poachers as guards is an example of providing ___.", o:[{t:"Economic incentives", c:true},{t:"Guns", c:false},{t:"Zoos", c:false},{t:"Food", c:false}], r:"Giving them a legal income from protecting animals stops the poaching." },
-    { id:91, l:"L14", q:"Thailand mangroves are worth ___x more intact than as shrimp farms.", o:[{t:"2", c:false},{t:"6", c:true},{t:"10", c:false},{t:"1", c:false}], r:"Assessing monetary value for 'ecosystem services' informs better usage." },
-    { id:92, l:"L14", q:"Land trusts and conservation easements represent ___ agreements.", o:[{t:"Illegal", c:false},{t:"Legal", c:true},{t:"Informal", c:false},{t:"Temporary", c:false}], r:"They permanently limit land development to protect conservation value." },
-    { id:93, l:"L14", q:"Buying fair trade and shade-grown coffee is a(n) ___ helping biodiversity.", o:[{t:"Consumer choice", c:true},{t:"Law", c:false},{t:"Invention", c:false},{t:"Debt", c:false}], r:"Individual purchasing decisions can influence conservation where crops are grown." },
-    { id:94, l:"L14", q:"Citizen scientists help by:", o:[{t:"Voting", c:false},{t:"Volunteer work to keep areas in shape and collect data", c:true},{t:"Hunting", c:false},{t:"Logging", c:false}], r:"Volunteer labor is critical for many large-scale conservation projects." },
-    { id:95, l:"L14", q:"Much of global biodiversity is found in ___ countries.", o:[{t:"Rich", c:false},{t:"Economically poorest", c:true},{t:"Cold", c:false},{t:"Island", c:false}], r:"This makes economic incentives (like ecotourism) essential for success." },
-    { id:96, l:"L14", q:"Ecotourism in Costa Rica brings in over $___ billion annually.", o:[{t:"1", c:false},{t:"3", c:true},{t:"10", c:false},{t:"5", c:false}], r:"A massive source of national income that justifies protecting nature." },
-    { id:97, l:"L14", q:"The Hatam story was originally a 'Tragedy of the ___'.", o:[{t:"Butterflies", c:false},{t:"Commons", c:true},{t:"Economy", c:false},{t:"Forest", c:false}], r:"Resources were being depleted for short-term gain with no regard for the future." },
-    { id:98, l:"L14", q:"Costa Rica success involved 4 areas: Personnel, support, laws, and ___.", o:[{t:"Zoos", c:false},{t:"Conservation education", c:true},{t:"War", c:false},{t:"Mining", c:false}], r:"Education ensures that people understand why the land is protected." },
-    { id:99, l:"L14", q:"$___ million of previous debt has been put into global conservation.", o:[{t:"100", c:false},{t:"500", c:true},{t:"1,000", c:false},{t:"10", c:false}], r:"Data from Infographic 11.8 on debt-for-nature swaps." },
-    { id:100, l:"L14", q:"The Butterfly Ranching project is on which peninsula?", o:[{t:"Bird's Head", c:true},{t:"Baja", c:false},{t:"Yucatan", c:false},{t:"Florida", c:false}], r:"Located in New Guinea, one of the largest tropical forests remaining." }
+    // L14: CONSERVATION (25)
+    { id:76, l:"L14", q:"A 'flagship species' acts as a(n) ___ for a cause.", o:[{t:"Ambassador or symbol", c:true},{t:"Pest", c:false},{t:"Invader", c:false},{t:"Food", c:false}], r:"Charismatic animals win public support." },
+    { id:77, l:"L14", q:"'Ecosystem Approach' to conservation?", o:[{t:"Saving one panda", c:false},{t:"Protecting entire habitats", c:true},{t:"Zoos only", c:false},{t:"Invasives", c:false}], r:"Protecting the landscape protects everything." },
+    { id:78, l:"L14", q:"Model country with >25% land protected:", o:[{t:"USA", c:false},{t:"Costa Rica", c:true},{t:"Canada", c:false},{t:"Brazil", c:false}], r:"Model achieved via funding, laws, and education." },
+    { id:79, l:"L14", q:"Daniel Janzen's project is in:", o:[{t:"Amazon", c:false},{t:"Guanacaste, Costa Rica", c:true},{t:"Florida", c:false},{t:"Madagascar", c:false}], r:"Restoring dry forests from cow pastures." },
+    { id:80, l:"L14", q:"'Ecotourism' works because it brings in ___.", o:[{t:"Money and economic benefit", c:true},{t:"Hunters", c:false},{t:"Poisons", c:false},{t:"Invasives", c:false}], r:"Locals protect what brings revenue." },
+    { id:81, l:"L14", q:"'Debt-for-Nature' swap result:", o:[{t:"Debt forgiven for conservation funds", c:true},{t:"Selling nature", c:false},{t:"Selling animals", c:false},{t:"War", c:false}], r:"Financial tool for developing nation ecosystems." },
+    { id:82, l:"L14", q:"ICDP stands for:", o:[{t:"Integrated Conservation & Development Project", c:true},{t:"Internal Data Plan", c:false},{t:"Invasive Control", c:false},{t:"Coastal Plan", c:false}], r:"Wildlife health + human living standards." },
+    { id:83, l:"L14", q:"Hatam people in New Guinea forest:", o:[{t:"Logging", c:false},{t:"Butterfly Ranching", c:true},{t:"Mining", c:false},{t:"Dam", c:false}], r:"Legally selling butterflies valued the forest as habitat." },
+    { id:84, l:"L14", q:"Regulates international trade (ivory):", o:[{t:"MMPA", c:false},{t:"CITES", c:true},{t:"CBD", c:false},{t:"ESA", c:false}], r:"Convention on International Trade in Endangered Species." },
+    { id:85, l:"L14", q:"MMPA (1972) protects:", o:[{t:"Birds", c:false},{t:"Marine Mammals", c:true},{t:"All mammals", c:false},{t:"Mussels", c:false}], r:"Prohibits capture or harassment." },
+    { id:86, l:"L14", q:"CBD (1992) nations count:", o:[{t:"193", c:true},{t:"50", c:false},{t:"10", c:false},{t:"100", c:false}], r:"Agreement for sustainable use." },
+    { id:87, l:"L14", q:"Pitfall of ecotourism if benefits:", o:[{t:"Feed animals", c:false},{t:"Do not stay local", c:true},{t:"Are too large", c:false},{t:"Zoos", c:false}], r:"Locals won't value nature if they don't profit." },
+    { id:88, l:"L14", q:"Conservation must incorporate:", o:[{t:"Humans", c:true},{t:"Zoos only", c:false},{t:"Deserts", c:false},{t:"Roads", c:false}], r:"Fails if neighbors are in poverty." },
+    { id:89, l:"L14", q:"Group helping Hatam get permits:", o:[{t:"UNESCO", c:false},{t:"WWF", c:true},{t:"UGA", c:false},{t:"CNN", c:false}], r:"WWF established a legal, sustainable economy." },
+    { id:90, l:"L14", q:"Hiring previous poachers as guards:", o:[{t:"Economic incentive", c:true},{t:"Guns", c:false},{t:"Food", c:false},{t:"Zoos", c:false}], r:"Legal income stops poaching." },
+    { id:91, l:"L14", q:"Mangroves vs shrimp farms value:", o:[{t:"1x", c:false},{t:"6x", c:true},{t:"10x", c:false},{t:"2x", c:false}], r:"Mangroves worth 6x more intact." },
+    { id:92, l:"L14", q:"Land trusts represent ___ agreements.", o:[{t:"Legal", c:true},{t:"Illegal", c:false},{t:"Secret", c:false},{t:"Temporary", c:false}], r:"Permanently limit development." },
+    { id:93, l:"L14", q:"Shade-grown coffee helping:", o:[{t:"Consumer choice", c:true},{t:"Law", c:false},{t:"Debt", c:false},{t:"Invention", c:false}], r:"Individual dollars support habitat." },
+    { id:94, l:"L14", q:"Citizen scientists help by:", o:[{t:"Volunteer work / data collection", c:true},{t:"Voting", c:false},{t:"Hunting", c:false},{t:"Logging", c:false}], r:"Labor is critical for projects." },
+    { id:95, l:"L14", q:"Biodiversity often in ___ countries.", o:[{t:"Economically poorest", c:true},{t:"Rich", c:false},{t:"Cold", c:false},{t:"Island", c:false}], r:"Creates survival vs habitat conflict." },
+    { id:96, l:"L14", q:"Costa Rica ecotourism $ annually:", o:[{t:"1B", c:false},{t:"3B", c:true},{t:"10B", c:false},{t:"5B", c:false}], r:"National income justifies nature." },
+    { id:97, l:"L14", q:"Hatam story solved a 'Tragedy of':", o:[{t:"Commons", c:true},{t:"Butterflies", c:false},{t:"Economy", c:false},{t:"Forest", c:false}], r:"Sustainable ownership instead of depletion." },
+    { id:98, l:"L14", q:"Costa Rica success areas count:", o:[{t:"4", c:true},{t:"10", c:false},{t:"2", c:false},{t:"1", c:false}], r:"Personnel, Support, Laws, Education." },
+    { id:99, l:"L14", q:"Debt-for-nature global total $:", o:[{t:"500M", c:true},{t:"100M", c:false},{t:"1,000M", c:false},{t:"10M", c:false}], r:"Infographic 11.8 data." },
+    { id:100, l:"L14", q:"Butterfly project peninsula:", o:[{t:"Bird's Head", c:true},{t:"Florida", c:false},{t:"Baja", c:false},{t:"Yucatan", c:false}], r:"Located in New Guinea." }
 ];
 
 const FLASHCARDS = [
-    { f:"Genetic Diversity", b:"Variations in genes among individuals of the same species. Crucial for adaptation." },
-    { f:"Endemic Species", b:"Organisms found only in specific, localized areas (e.g. Jordan's salamander)." },
-    { f:"Species Diversity", b:"Variety of species in an area; includes both richness and relative abundance." },
-    { f:"Ecological Diversity", b:"Variety of habitats, niches, trophic levels, and interactions in an ecosystem." },
-    { f:"Hotspots", b:"25 areas covering 1.4% of land but holding 44% of plant species." },
-    { f:"Time View", b:"Hypothesis that tropics are diverse because they are older habitats." },
+    { f:"Genetic Diversity", b:"Variations in genes within a population. Crucial for adaptation and survival." },
+    { f:"Endemic Species", b:"Species found in ONLY one specific area (e.g. Jordan's salamander)." },
+    { f:"Species Diversity", b:"Variety of species in an area; includes richness and relative abundance." },
+    { f:"Ecological Diversity", b:"Variety of habitats, niches, trophic levels, and interactions in a system." },
+    { f:"Hotspots", b:"25 areas covering 1.4% of land area but holding 44% of plant species." },
+    { f:"Time View", b:"Hypothesis that tropics are diverse because they are much older habitats." },
     { f:"Equilibrium View", b:"Hypothesis that tropics reach balance where speciation > extinction." },
     { f:"Alpha Diversity", b:"Local diversity: number of species in a small area of homogeneous habitat." },
-    { f:"Gamma Diversity", b:"Regional diversity: total species in all habitats within a large area." },
-    { f:"MacArthur-Wilson", b:"Model predicting island diversity based on Size and Isolation." },
+    { f:"Gamma Diversity", b:"Regional diversity: total species in all habitats within a large geographic area." },
+    { f:"MacArthur-Wilson", b:"Model predicting island diversity based on island Size and Isolation." },
     { f:"Background Rate", b:"Natural extinction rate before humans: ~1 per 10 million species per year." },
-    { f:"Mass Extinction", b:"Event losing over 50% of animal species. There have been 5 major ones." },
-    { f:"Permian Extinction", b:"Largest extinction recorded; lost 90-95% of marine species." },
-    { f:"K-T Extinction", b:"Most recent mass event (65.5M yrs ago). Likely an asteroid impact." },
+    { f:"Mass Extinction", b:"Event losing over 50% of animal species. Earth has had 5 major ones." },
+    { f:"Permian Extinction", b:"Largest extinction recorded; lost over 90% of marine species." },
+    { f:"K-T Extinction", b:"Most recent mass event (65.5M yrs ago). Likely caused by an asteroid." },
     { f:"Extirpated", b:"Locally extinct but still existing elsewhere in the world." },
     { f:"Coextinction", b:"Loss of a species following the loss of its only prey or partner." },
-    { f:"ESA (1973)", b:"US law protecting species and critical habitats regardless of economic cost." },
-    { f:"IUCN Red List", b:"Classifies extinction risk (Critically Endangered = 50% risk in 10 years)." },
-    { f:"Snail Darter", b:"Tiny fish whose ESA listing stopped the Tellico Dam in court." },
-    { f:"Exotic Species", b:"Species introduced by humans beyond its natural geographical range." },
-    { f:"Invasive Species", b:"Alien species whose introduction causes harm to nature, economy, or health." },
-    { f:"Brown Tree Snake", b:"Invasive predator in Guam that wiped out half of native birds." },
-    { f:"Burmese Python", b:"Everglades invader causing 99% decline in some native mammals." },
-    { f:"Asian Carp", b:"Cleaners that escaped; disrupt food webs by eating native plankton." },
+    { f:"ESA (1973)", b:"US law protecting species and habitats regardless of economic cost." },
+    { f:"IUCN Red List", b:"Union classifying extinction risk (e.g. Critically Endangered status)." },
+    { f:"Snail Darter", b:"Tiny fish whose ESA listing stopped a $100M dam in the US Supreme Court." },
+    { f:"Exotic Species", b:"Species introduced by human action beyond its natural range." },
+    { f:"Invasive Species", b:"Alien species causing harm to nature, economy, or human health." },
+    { f:"Brown Tree Snake", b:"Invasive predator in Guam that wiped out half of all native birds." },
+    { f:"Burmese Python", b:"Everglades invader causing massive declines in native mammal populations." },
+    { f:"Asian Carp", b:"Imported cleaners that escaped; disrupt food webs by eating native plankton." },
     { f:"Snakehead Fish", b:"Air-breathing predator that can survive on land and crawl 400m." },
-    { f:"Polyphagous", b:"Having a broad diet; a common trait of successful invaders." },
+    { f:"Polyphagous", b:"Having a broad diet; a trait of most successful invasive species." },
     { f:"Flagship Species", b:"Charismatic 'ambassador' used as a symbol for conservation (e.g. Panda)." },
     { f:"Ecosystem Approach", b:"Saving entire habitats rather than just one single species." },
-    { f:"Ecotourism", b:"Travel providing economic incentives to locals for conserving nature." },
+    { f:"Ecotourism", b:"Travel providing economic incentives to locals for conserving natural systems." },
     { f:"Debt-for-Nature", b:"Debt forgiveness in exchange for funding local nature projects." },
     { f:"ICDP", b:"Integrated Conservation & Development: connecting human welfare to nature health." },
     { f:"CITES", b:"Treaty regulating international trade of endangered species or products." }
@@ -283,12 +300,12 @@ let revMode = 'errors';
 let shuffleOn = false;
 
 function load() {
-    const saved = localStorage.getItem('ecol_v6_study');
+    const saved = localStorage.getItem('ecol_v7_study');
     if(saved) state = JSON.parse(saved);
 }
 
 function save() {
-    localStorage.setItem('ecol_v6_study', JSON.stringify(state));
+    localStorage.setItem('ecol_v7_study', JSON.stringify(state));
     updateDash();
 }
 
@@ -350,28 +367,30 @@ function renderQ() {
     let html = `
         <div class="flex justify-between items-center mb-6">
             <span class="text-[10px] font-black tracking-widest text-blue-500 uppercase px-3 py-1 bg-blue-50 rounded-full">${q.l}</span>
-            <button onclick="toggleBook(${q.id})" class="text-2xl transition ${isBook?'text-amber-400':'text-gray-200'}"><i class="fas fa-bookmark"></i></button>
+            <button onclick="toggleBook(${q.id})" class="text-2xl transition active:scale-110 ${isBook?'text-amber-400':'text-gray-200'}"><i class="fas fa-bookmark"></i></button>
         </div>
         <h3 class="text-xl font-bold mb-8 leading-tight text-slate-900">${q.q}</h3>
         <div class="space-y-3">
     `;
 
     q.o.forEach(opt => {
-        let cls = "w-full text-left p-4 border rounded-xl transition hover:bg-slate-50";
+        let cls = "w-full text-left p-4 border rounded-2xl transition hover:bg-slate-50 active:scale-[0.98]";
         if(userAns !== undefined) {
-            if(opt.c) cls = "w-full text-left p-4 border-2 rounded-xl ans-correct";
-            else if(!opt.c && userAns === false) cls = "w-full text-left p-4 border-2 rounded-xl ans-wrong";
-            else cls = "w-full text-left p-4 border rounded-xl ans-neutral";
+            if(opt.c) cls = "w-full text-left p-4 border-2 rounded-2xl ans-correct";
+            else if(!opt.c && userAns === false) cls = "w-full text-left p-4 border-2 rounded-2xl ans-wrong";
+            else cls = "w-full text-left p-4 border rounded-2xl ans-neutral";
         }
         html += `<button onclick="handleAns(${q.id}, ${opt.c})" ${userAns!==undefined?'disabled':''} class="${cls}">${opt.t}</button>`;
     });
 
     html += `</div>`;
     if(userAns !== undefined) {
-        html += `<div class="mt-10 p-6 bg-blue-50 rounded-2xl border border-blue-100">
-            <p class="text-[10px] font-black uppercase text-blue-500 mb-2">Detailed Feedback</p>
+        html += `<div id="rationale-box" class="mt-8 p-5 bg-blue-50 rounded-2xl border border-blue-100">
+            <p class="text-[10px] font-black uppercase text-blue-500 mb-2">Rationale</p>
             <p class="text-sm font-medium text-blue-900 leading-relaxed">${q.r}</p>
         </div>`;
+        // Scroll to the rationale after answer
+        setTimeout(() => { document.getElementById('rationale-box').scrollIntoView({ behavior: 'smooth', block: 'center' }); }, 100);
     }
 
     ui.innerHTML = html;
@@ -390,6 +409,7 @@ function navQ(dir) {
     if(qIdx < 0) qIdx = 0;
     if(qIdx >= quizList.length) qIdx = quizList.length - 1;
     renderQ();
+    window.scrollTo(0,0);
 }
 
 function nextQuestion() { navQ(1); }
@@ -418,14 +438,14 @@ function renderReview() {
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
             <div class="text-[10px] font-black text-blue-400 mb-1 tracking-widest uppercase">${q.l}</div>
             <h4 class="font-bold mb-4">${q.q}</h4>
-            <div class="text-xs font-bold text-emerald-600 mb-2">Correct Answer: ${q.o.find(x=>x.c).t}</div>
-            <p class="text-xs text-slate-500 leading-relaxed p-3 bg-slate-50 rounded-lg">${q.r}</p>
+            <div class="text-xs font-bold text-emerald-600 mb-2 underline">Correct Answer: ${q.o.find(x=>x.c).t}</div>
+            <p class="text-xs text-slate-500 leading-relaxed p-4 bg-slate-50 rounded-xl mt-4">${q.r}</p>
         </div>
     `).join('');
 }
 
 function resetData() {
-    if(confirm('Clear all progress?')) { state={answers:{}, bookmarks:[]}; save(); location.reload(); }
+    if(confirm('Wipe all local progress?')) { state={answers:{}, bookmarks:[]}; save(); location.reload(); }
 }
 
 function init() {
